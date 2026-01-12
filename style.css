@@ -1,11 +1,11 @@
 /* Общие настройки шрифта */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
 
 html, body, [class*="css"] {
     font-family: 'Inter', sans-serif;
 }
 
-/* Скрытие стандартных радио-кнопок и превращение их в ссылки */
+/* СКРЫВАЕМ КРУЖОЧКИ В МЕНЮ (SideBar) */
 div[role="radiogroup"] > label > div:first-child {
     display: none !important;
 }
@@ -14,44 +14,44 @@ div[role="radiogroup"] {
     gap: 0px !important;
 }
 
+/* Стиль ссылок в меню */
 div[role="radiogroup"] label {
-    padding: 10px 15px !important;
-    border-radius: 8px;
+    padding: 12px 20px !important;
+    border-radius: 0px;
     transition: 0.2s;
-    border: none !important;
+    border-bottom: 1px solid #f0f0f0 !important;
     background-color: transparent !important;
-    color: #444 !important;
-    font-size: 15px !important;
+    color: #555 !important;
+    font-size: 14px !important;
     cursor: pointer;
 }
 
 div[role="radiogroup"] label:hover {
-    background-color: #f0f2f6 !important;
-    color: #000 !important;
+    color: #007bff !important;
+    background-color: #f8f9fa !important;
 }
 
-/* Стиль для активного (выбранного) пункта меню */
+/* Активный пункт меню */
 div[role="radiogroup"] label[data-selected="true"] {
-    background-color: #e8f0fe !important;
-    color: #1a73e8 !important;
+    color: #007bff !important;
     font-weight: 600;
+    border-left: 4px solid #007bff !important;
+    background-color: #f0f7ff !important;
 }
 
-/* Блок теории (Голубой) */
-.formula-block {
-    background-color: #e3f2fd;
+/* Контейнеры контента */
+.theory-block {
+    background-color: #e3f2fd; /* Голубой */
     color: #0d47a1;
     padding: 40px;
     border-radius: 20px;
     margin: 20px 0;
     text-align: center;
     border: 1px solid #bbdefb;
-    line-height: 1.6;
 }
 
-/* Блок примера (Салатовый) */
 .example-block {
-    background-color: #f1f8e9;
+    background-color: #f1f8e9; /* Салатовый */
     color: #33691e;
     padding: 40px;
     border-radius: 20px;
@@ -61,27 +61,17 @@ div[role="radiogroup"] label[data-selected="true"] {
 }
 
 /* Заголовок вопроса */
-.main-title {
+.title-text {
     text-align: center;
     font-size: 32px;
     font-weight: 700;
-    margin-bottom: 40px;
     color: #1a1c23;
+    margin-bottom: 30px;
 }
 
-/* Подписи над блоками */
-.section-label {
+/* Центрирование любого текста */
+.centered {
     text-align: center;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: #888;
-    margin-top: 30px;
-}
-
-/* Центрирование изображений */
-.centered-image {
-    display: flex;
-    justify-content: center;
-    margin: 20px 0;
+    display: block;
+    width: 100%;
 }
