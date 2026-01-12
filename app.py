@@ -1,139 +1,66 @@
 import streamlit as st
+import plotly.graph_objects as go
+import numpy as np
+from content import QUESTIONS
 
-# Настройки страницы
-st.set_page_config(page_title="Алгебра Экзамен", layout="wide")
+# Настройка страницы
+st.set_page_config(page_title="Algebra Exam", layout="wide")
 
-# Функция для подключения CSS
-def local_css(file_name):
+# Загрузка CSS
+def load_css(file_name):
     with open(file_name) as f:
         st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
-local_css("style.css")
+load_css("style.css")
 
-# --- КОНТЕНТ (1-10 ВОПРОСОВ) ---
-CONTENT = {
-    "1. Общее уравнение прямой. Каноническое уравнение прямой": {
-        "theory": r"""
-            $$Ax + By + C = 0$$
-            $$\frac{x - x_0}{p} = \frac{y - y_0}{q}$$
-        """,
-        "example": r"""
-            Через точку $M(1, 2)$ с вектором $\vec{a}(3, 4)$:
-            $$\frac{x - 1}{3} = \frac{y - 2}{4}$$
-        """,
-        "image": "https://raw.githubusercontent.com/manim-community/manim/main/logo/cropped.png" # Заглушка
-    },
-    "2. Уравнение прямой в отрезках. Параметрическое уравнение прямой": {
-        "theory": r"""
-            В отрезках: $$\frac{x}{a} + \frac{y}{b} = 1$$
-            Параметрическое: $$\begin{cases} x = x_0 + pt \\ y = y_0 + qt \end{cases}$$
-        """,
-        "example": r"""
-            Для $2x + 4y = 8$: $$\frac{x}{4} + \frac{y}{2} = 1$$
-        """,
-        "image": None
-    },
-    "3. Расстояние от точки до прямой. Угол между двумя прямыми": {
-        "theory": r"""
-            Расстояние: $$d = \frac{|Ax_0 + By_0 + C|}{\sqrt{A^2 + B^2}}$$
-            Угол: $$\cos \phi = \frac{|A_1 A_2 + B_1 B_2|}{\sqrt{A_1^2 + B_1^2} \cdot \sqrt{A_2^2 + B_2^2}}$$
-        """,
-        "example": r"""
-            От $(0,0)$ до $3x+4y-5=0$: $$d = \frac{|-5|}{\sqrt{9+16}} = 1$$
-        """,
-        "image": None
-    },
-    "4. Уравнение прямой в отрезках. Уравнение плоскости в отрезках": {
-        "theory": r"""
-            Для плоскости: $$\frac{x}{a} + \frac{y}{b} + \frac{z}{c} = 1$$
-        """,
-        "example": r"""
-            Через точки $(2,0,0), (0,3,0), (0,0,1)$: $$\frac{x}{2} + \frac{y}{3} + \frac{z}{1} = 1$$
-        """,
-        "image": None
-    },
-    "5. Условие параллельности и перпендикулярности двух прямых": {
-        "theory": r"""
-            Параллельность: $$\frac{A_1}{A_2} = \frac{B_1}{B_2}$$
-            Перпендикулярность: $$A_1 A_2 + B_1 B_2 = 0$$
-        """,
-        "example": r"""
-            $y=2x+1$ и $y=2x-5$ параллельны, так как коэффициенты при $x$ равны (2).
-        """,
-        "image": None
-    },
-    "6. Общее уравнение плоскости. Расстояние от точки до плоскости": {
-        "theory": r"""
-            Уравнение: $$Ax + By + Cz + D = 0$$
-            Расстояние: $$d = \frac{|Ax_0 + By_0 + Cz_0 + D|}{\sqrt{A^2 + B^2 + C^2}}$$
-        """,
-        "example": r"""
-            От $(1,1,1)$ до $x+2y+2z-11=0$: $$d = \frac{|1+2+2-11|}{\sqrt{1+4+4}} = 2$$
-        """,
-        "image": None
-    },
-    "7. Уравнение окружности. Уравнение сферы": {
-        "theory": r"""
-            Окружность: $$(x-x_0)^2 + (y-y_0)^2 = R^2$$
-            Сфера: $$(x-x_0)^2 + (y-y_0)^2 + (z-z_0)^2 = R^2$$
-        """,
-        "example": r"""
-            Сфера с $R=5$ в начале координат: $$x^2 + y^2 + z^2 = 25$$
-        """,
-        "image": None
-    },
-    "8. Понятие вектора. Правил сложения векторов, умножение на скаляр": {
-        "theory": r"""
-            Сумма: $$\vec{a} + \vec{b} = (a_x+b_x, a_y+b_y)$$
-            Умножение: $$\lambda \vec{a} = (\lambda a_x, \lambda a_y)$$
-        """,
-        "example": r"""
-            $\vec{a}=(1,2), \vec{b}=(3,0) \Rightarrow \vec{a}+\vec{b}=(4,2)$
-        """,
-        "image": None
-    },
-    "9. Определение скалярного произведения. Формула через координаты": {
-        "theory": r"""
-            $$\vec{a} \cdot \vec{b} = a_x b_x + a_y b_y + a_z b_z$$
-            $$\vec{a} \cdot \vec{b} = |\vec{a}| |\vec{b}| \cos \phi$$
-        """,
-        "example": r"""
-            $\vec{a}=(1,2), \vec{b}=(4,5) \Rightarrow 1\cdot4 + 2\cdot5 = 14$
-        """,
-        "image": None
-    },
-    "10. Формула вычисления угла между векторами": {
-        "theory": r"""
-            $$\cos \phi = \frac{a_x b_x + a_y b_y + a_z b_z}{\sqrt{\sum a_i^2} \cdot \sqrt{\sum b_i^2}}$$
-        """,
-        "example": r"""
-            Между $(1,1)$ и $(1,0)$: $$\cos \phi = \frac{1}{\sqrt{2} \cdot 1} \Rightarrow 45^\circ$$
-        """,
-        "image": None
-    }
-}
+# Боковое меню
+st.sidebar.markdown("<h2 style='text-align: center;'>Вопросы</h2>", unsafe_allow_html=True)
+selected_title = st.sidebar.radio("", list(QUESTIONS.keys()))
 
-# --- ИНТЕРФЕЙС ---
+# Заголовок
+st.markdown(f'<div class="title-text">{selected_title}</div>', unsafe_allow_html=True)
 
-# Боковое меню (текстовые ссылки)
-st.sidebar.markdown("### ВОПРОСЫ")
-selected_q = st.sidebar.radio("Navigation", list(CONTENT.keys()), label_visibility="collapsed")
+# Функция для создания реальных визуализаций
+def draw_geometry(title):
+    fig = go.Figure()
+    
+    if "1." in title: # Прямая
+        x = np.linspace(-5, 5, 10)
+        y = (2*x + 13)/3
+        fig.add_trace(go.Scatter(x=x, y=y, mode='lines', name='Прямая'))
+        fig.update_layout(title="График прямой", height=300)
 
-# Основной экран
-st.markdown(f'<div class="main-title">{selected_q}</div>', unsafe_allow_html=True)
+    elif "7." in title: # Сфера (проекция)
+        theta = np.linspace(0, 2*np.pi, 100)
+        fig.add_trace(go.Scatter(x=4*np.cos(theta), y=4*np.sin(theta), fill="toself", name='Сфера (сечение)'))
+        fig.update_layout(title="Сечение сферы R=4", height=300, yaxis=dict(scaleanchor="x"))
 
-q_data = CONTENT[selected_q]
+    elif "8." in title: # Векторы
+        fig.add_trace(go.Scatter(x=[0, 1], y=[0, 2], mode='lines+markers', name='Вектор A'))
+        fig.add_trace(go.Scatter(x=[1, 4], y=[2, 3], mode='lines+markers', name='Вектор B'))
+        fig.add_trace(go.Scatter(x=[0, 4], y=[0, 3], mode='lines+markers', name='Сумма A+B'))
+        fig.update_layout(title="Сложение векторов", height=300)
 
-# Секция Теории
-st.markdown('<div class="section-label">Теория и формулы</div>', unsafe_allow_html=True)
-st.markdown(f'<div class="formula-block">{q_data["theory"]}</div>', unsafe_allow_html=True)
+    if len(fig.data) > 0:
+        fig.update_layout(margin=dict(l=20, r=20, t=40, b=20))
+        st.plotly_chart(fig, use_container_width=True)
 
-# Изображение
-if q_data["image"]:
-    st.markdown('<div class="centered-image">', unsafe_allow_html=True)
-    st.image(q_data["image"], width=300)
-    st.markdown('</div>', unsafe_allow_html=True)
+# РЕНДЕРИНГ КОНТЕНТА
+data = QUESTIONS[selected_title]
 
-# Секция Примера
-st.markdown('<div class="section-label">Пример решения</div>', unsafe_allow_html=True)
-st.markdown(f'<div class="example-block">{q_data["example"]}</div>', unsafe_allow_html=True)
+# Блок Теории
+st.markdown('<div class="theory-block">', unsafe_allow_html=True)
+st.markdown(f'<span class="centered">{data["theory_text"]}</span>', unsafe_allow_html=True)
+for m in data["theory_math"]:
+    st.latex(m)
+st.markdown('</div>', unsafe_allow_html=True)
+
+# Визуализация (между блоками)
+draw_geometry(selected_title)
+
+# Блок Примера
+st.markdown('<div class="example-block">', unsafe_allow_html=True)
+st.markdown(f'<span class="centered">{data["example_text"]}</span>', unsafe_allow_html=True)
+for m in data["example_math"]:
+    st.latex(m)
+st.markdown('</div>', unsafe_allow_html=True)
